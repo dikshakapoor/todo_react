@@ -9,7 +9,7 @@ class Form extends React.Component {
         }
     }
 
-    keyPressHandle = (event) => {
+    handleKeyPressEvent = (event) => {
         if (event.which === 13) {
             const textValue = event.currentTarget.value.trim();
             // event.currentTarget.value = " "; // wrong
@@ -49,7 +49,7 @@ class Form extends React.Component {
         const { currentInputValue } = this.props;
         const { text, inputUpdated } = this.state;
         const inputValue = (inputUpdated) ? text : currentInputValue;
-        debugger;
+
         return (
 
 
@@ -60,7 +60,7 @@ class Form extends React.Component {
                         value={inputValue}
                         placeholder="Type here.."
                         onChange={this.handleInputChange}
-                        onKeyPress={this.keyPressHandle}
+                        onKeyPress={this.handleKeyPressEvent}
                     />
                 </div>
                 <div className="wrapper">

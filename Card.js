@@ -3,27 +3,19 @@ import completeButtonImg from "./_ionicons_svg_md-checkmark-circle.svg";
 import removeButtonImg from "./_ionicons_svg_md-trash.svg";
 import editButtonImg from "./_ionicons_svg_md-create.svg";
 
+let editedTask;
 class Card extends React.Component {
+    updateEditedTask = (event, id) => {
+        this.props.handleEditedTaskDisciption(event.target.value, id)
+        console.log(event);
 
-    constructor(props) {
-        super(props);
-        debugger;
-        // this.state = {
-        //     editedTask: props.task.discription,
-
-        // }
     }
 
-    debugger;
-    updateEditedTask = (event) => {
-        const editedTask = event.target.value.trim();
-        this.setState({ editedTask })
-    }
-
-    keyPress = (event, id) => {
+    handleKeyPress = (event, id) => {
         if (event.which === 13) {
-            const { editedTask } = this.state;
-            this.props.handleEditedTask(editedTask, id);
+            console.log(editedTask);
+            this.props.setEditModeCompeleted(id);
+            // this.props.handleEditedTask(editedTask, id);
         }
     }
 
@@ -34,9 +26,9 @@ class Card extends React.Component {
             return (
                 <div className="updatedtask">
                     <input autoFocus value={this.props.task.discription} key={id} className="editedTaskInput"
-                        onChange={this.updateEditedTask}
-                        onKeyPress={(event) => { this.keyPress(event, id) }}
-                        onBlur={() => { this.saveOnOutOfFocus(id) }}
+                        onChange={(event) => { this.updateEditedTask(event, id) }}
+                        onKeyPress={(event) => { this.handleKeyPress(event, id) }}
+                        onBlur={(event) => { this.saveOnOutOfFocus(event, id) }}
                     />
                 </div>
             )
@@ -45,57 +37,51 @@ class Card extends React.Component {
             <div className="task" ><b className={isCompleted ? "taskCompleted" : ""}> {discription}</b></div>)
     }
 
-    saveOnOutOfFocus = (id) => {
-        const { editedTask } = this.state;
-        this.props.handleEditedTask(editedTask, id);
+    saveOnOutOfFocus = (event, id) => {
+        console.log(event);
+        this.props.setEditModeCompeleted(id); // will set the edit process over 
+        // need to write this code -- save the edited value from state.discription in parent
+
+
 
     }
 
-    debugger;
-    setDisableForCompletedButton = () => {
+    getIsCompletedDisabled = () => {
         const { isCompleted, isEdited } = this.props.task;
-        if (isCompleted === "" && isEdited === "") return false;
-        else if (isCompleted === true) return false;
-        else if (isCompleted === "" && isEdited === true) return true;
-        else if (isCompleted === false && isEdited === true) return true;
+        if (isCompleted === false && isEdited === false) return false;// for initial state of the buttons 
+        else if (isCompleted === false && isEdited === true) return true; // disable the complete button when edited is true
 
     }
 
-    setDisableForEditButton = () => {
+    getIsEditedDisabled = () => {
         const { isEdited, isCompleted } = this.props.task;
-        if (isEdited === "" && isCompleted === "") return false;
-        else if (isEdited === true) return false;
-        else if (isEdited === "" && isCompleted === true) return true;
+        if (isEdited === false && isCompleted === false) return false; // similar to that of Complete Button
         else if (isEdited === false && isCompleted === true) return true;
     }
-    debugger;
-    setDisableForRemoveButton = () => {
+
+
+
+    getIsRemoveDisabled = () => {
+
         const { isEdited, isCompleted } = this.props.task;
-        if (isEdited === true && isCompleted === true)
-            return true;
-        else if (isEdited === false && isCompleted === true)
-            return true;
-        else if (isEdited === true && isCompleted === false)
-            return true;
-        else if (isEdited === "" && isCompleted === true) return true;
-        else if (isEdited === true && isCompleted === "") return true;
-        else if (isEdited === "" && isCompleted === "") return false;
+        return isEdited || isCompleted
     }
+
     render() {
-        debugger;
         const { id, discription, isCompleted, isEdited } = this.props.task;
 
-        return (<div className="card" id={id} key={id}>
-            {this.taskDescription(discription, isCompleted, id, isEdited)}
-            <div className="icon" >
-                <button disabled={this.setDisableForCompletedButton()} className='completd' onClick={() => { this.props.handleCompletedItem(id); }} >
-                    <img src={completeButtonImg} alt="complete" style={{ width: "20px", heigth: "20px" }} /></button>
-                <button disabled={this.setDisableForRemoveButton()} className="removed" onClick={() => { this.props.handleDeltedItem(id); }} >
-                    <img src={removeButtonImg} alt="delete" style={{ width: "20px", height: "20px" }} /></button>
-                <button disabled={this.setDisableForEditButton()} className="edited" onClick={() => { this.props.editedTask(id); }}  >
-                    <img src={editButtonImg} alt="edit" style={{ width: "20px", heigth: "20px" }} /></button>
+        return (
+            <div className="card" id={id} key={id}>
+                {this.taskDescription(discription, isCompleted, id, isEdited)}
+                <div className="icon" >
+                    <button disabled={this.getIsCompletedDisabled()} className='completd' onClick={() => { this.props.handleCompletedItem(id); }} >
+                        <img src={completeButtonImg} alt="complete" style={{ width: "20px", heigth: "20px" }} /></button>
+                    <button disabled={this.getIsRemoveDisabled()} className="removed" onClick={() => { this.props.handleDeltedItem(id); }} >
+                        <img src={removeButtonImg} alt="delete" style={{ width: "20px", height: "20px" }} /></button>
+                    <button disabled={this.getIsEditedDisabled()} className="edited" onClick={() => { this.props.handleEditedTask(id); }}  >
+                        <img src={editButtonImg} alt="edit" style={{ width: "20px", heigth: "20px" }} /></button>
+                </div>
             </div>
-        </div>
         )
     }
 }

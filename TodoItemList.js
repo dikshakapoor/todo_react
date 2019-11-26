@@ -4,11 +4,10 @@ import Card from "./Card";
 class TodoItemList extends React.Component {
 
   renderItem = task => {
-    debugger;
     return (
       <Card key={task.id} task={task} handleDeltedItem={this.props.handleDeltedItem} handleCompletedItem={this.props.handleCompletedItem}
         handleEditedTask={this.props.handleEditedTask}
-        updatedTaskList={this.props.updatedTaskList} />
+        updatedTaskList={this.props.updatedTaskList} setEditModeCompeleted={this.props.setEditModeCompeleted} handleEditedTaskDisciption = {this.props.handleEditedTaskDisciption}/>
     )
   }
 

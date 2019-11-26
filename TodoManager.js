@@ -18,8 +18,8 @@ class TodoManager extends React.Component {
     const newTask = {
       id: Date.now(),
       discription: currentValue,
-      isCompleted: "",
-      isEdited: "",
+      isCompleted: false,
+      isEdited: false,
     };
     this.setState({
       currentInputValue: '',
@@ -52,13 +52,13 @@ class TodoManager extends React.Component {
     })
     this.setState({ taskList: updatedList })
   }
+  debugger;
 
-  handleEditedTask = (editedTaskDesc, id) => {
+  handleEditedTask = (id) => {
     const updatedList = this.state.taskList.map((task) => {
       if (task.id === id) {
-        task.discription = editedTaskDesc;
-        task.isEdited = false;
-        task.isCompleted = false;
+        task.isEdited = !task.isEdited;
+        // task.isCompleted = false;
         return task
       }
       return task
@@ -68,7 +68,7 @@ class TodoManager extends React.Component {
 
   markAllCompelte = () => {
     const updatedList = this.state.taskList.map((task) => {
-      task.isCompleted = true;
+      task.isCompleted = !task.isCompleted;
       return task;
     })
     this.setState({ taskList: updatedList })
@@ -81,7 +81,7 @@ class TodoManager extends React.Component {
   updatedTaskList = (id) => {
     const updatedList = this.state.taskList.map((task) => {
       if (task.id === id) {
-        task.isEdited = true;
+        task.isEdited = !task.isEdited;
         return task
       }
       return task
@@ -89,20 +89,43 @@ class TodoManager extends React.Component {
     )
     this.setState({ taskList: updatedList })
   }
+  setEditModeCompeleted = (id) => {
+    const updatedList = this.state.taskList.map((task) => {
+      if (task.id === id) {
+        task.isEdited = false; // to show process is over 
+        return task
+      }
+      return task
+    }
+    )
+    this.setState({ taskList: updatedList })
+
+  }
+  handleEditedTaskDisciption = (editedTaskDesc, id) => {
+    const updatedList = this.state.taskList.map((task) => {
+      if (task.id === id) {
+        task.discription = editedTaskDesc// to show process is over 
+        return task
+      }
+      return task
+
+    })
+    this.setState({ taskList: updatedList })
+  }
 
   render() {
     const { taskList } = this.state;
     return (
-      <div className="container">
+      <div className="container" >
         <NavigationBar markAllCompelte={this.markAllCompelte} deleteAll={this.deleteAll} />
         <h2>TODO LIST</h2>
         <Form inputTask={this.inputTask} currentInputValue={this.state.currentInputValue} todoInputValue={this.todoInputValue} setCurrentInputValue={this.setCurrentInputValue} />
         <ul className="taskList_wrapper">
           <TodoItemList entries={taskList} handleDeltedItem={this.handleDeltedItem} handleCompletedItem={this.handleCompletedItem}
             handleEditedTask={this.handleEditedTask}
-            updatedTaskList={this.updatedTaskList} />
+            updatedTaskList={this.updatedTaskList} setEditModeCompeleted={this.setEditModeCompeleted} handleEditedTaskDisciption={this.handleEditedTaskDisciption} />
         </ul>
-      </div>
+      </div >
     );
   }
 }
